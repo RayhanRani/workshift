@@ -137,7 +137,7 @@ function verticalChip(vertical, school) {
 function renderLanding() {
   return `
     <div class="screen">
-      <h1 class="headline">Pick your school. See the future of your field.</h1>
+      <h1 class="headline">Pick your school. <span class="headline-break">See the future of your field.</span></h1>
       <p class="subhead">One real task, done by hand and by AI. Five minutes. Find out what to actually study.</p>
       <div class="school-grid">
         ${WORKSHIFT_DATA.schools.map((school) => `

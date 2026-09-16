@@ -649,4 +649,5 @@ input[type="range"]::-moz-range-thumb {
   .mosaic, .skills-cols, .metric-grid { grid-template-columns: 1fr; }
   .vs-badge { display: none; }
   h1.headline { font-size: 1.4rem; }
+  h1.headline .headline-break { display: block; }
 }
