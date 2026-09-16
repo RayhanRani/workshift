@@ -1,5 +1,5 @@
 /**
- * SCU WorkShift — app logic.
+ * SCU WorkShift: app logic.
  * One linear flow, five screens, shared by every school:
  * landing -> task -> simulator -> reality -> career
  */
@@ -137,7 +137,7 @@ function verticalChip(vertical, school) {
 function renderLanding() {
   return `
     <div class="screen">
-      <h1 class="headline">Pick your school. See the future of your field.</h1>
+      <h1 class="headline">Pick your school. See your field's future, one task at a time.</h1>
       <p class="subhead">One real task, done by hand and by AI. Five minutes. Zero login. Find out what to actually study.</p>
       <div class="school-grid">
         ${WORKSHIFT_DATA.schools.map((school) => `
@@ -145,14 +145,14 @@ function renderLanding() {
             <div class="icon-tile">${school.icon}</div>
             <div class="school-body">
               <div class="school-name">${school.name}</div>
-              <div class="school-vertical">${school.verticals[0].name} · "${school.mascotLine}"</div>
+              <div class="school-vertical">${school.verticals[0].name} · ${school.mascotLine}</div>
               <span class="school-task-chip">${school.verticals[0].task}</span>
             </div>
             <div class="arrow">→</div>
           </button>
         `).join("")}
       </div>
-      <p class="landing-footer-note">Every claim here is backed by a real study. We show you the vendor pitch too — so you can tell the difference.</p>
+      <p class="landing-footer-note">Every claim here is backed by a real study. We show you the vendor pitch too, so you can tell the difference.</p>
     </div>
   `;
 }
@@ -205,7 +205,7 @@ function renderSimulator(vertical, school) {
     <div class="screen">
       ${verticalChip(vertical, school)}
       <h1 class="headline">Drag the sliders. Watch it flip.</h1>
-      <p class="subhead">This is the real math behind "AI is faster." Move accuracy down toward what studies actually found — see when the tradeoff flips.</p>
+      <p class="subhead">This is the real math behind "AI is faster." Move accuracy down toward what studies actually found, and see when the tradeoff flips.</p>
 
       <div class="sim-panel">
         <div class="slider-group">
@@ -221,7 +221,7 @@ function renderSimulator(vertical, school) {
         <div class="slider-group">
           <label>AI accuracy / usable rate <span class="value" id="label-aiAccuracy">${fmtPct(sliders.aiAccuracy)}</span></label>
           <input type="range" min="1" max="100" value="${Math.round(sliders.aiAccuracy * 100)}" data-slider="aiAccuracy" />
-          <div class="slider-caption" id="accuracy-caption">Break-even is ${fmtPct(results.breakEvenAccuracy)} — drag below it and watch the banner flip.</div>
+          <div class="slider-caption" id="accuracy-caption">Break-even is ${fmtPct(results.breakEvenAccuracy)}, drag below it and watch the banner flip.</div>
         </div>
       </div>
 
@@ -272,7 +272,7 @@ function updateSimulatorDisplay(vertical) {
   document.getElementById("label-hourlyValue").textContent = `$${sliders.hourlyValue}`;
   document.getElementById("label-aiAccuracy").textContent = fmtPct(sliders.aiAccuracy);
   document.getElementById("accuracy-caption").textContent =
-    `Break-even is ${fmtPct(results.breakEvenAccuracy)} — drag below it and watch the banner flip.`;
+    `Break-even is ${fmtPct(results.breakEvenAccuracy)}, drag below it and watch the banner flip.`;
 
   const winnerClass = results.aiWins ? "ai-wins" : "manual-wins";
   const winnerText = results.aiWins ? "🤖 AI wins right now" : "🙋 Manual wins right now";
@@ -320,7 +320,7 @@ function renderReality(vertical, school) {
       </div>
 
       <div class="sources-list">
-        ${vertical.sources.map((s) => `<span class="source-tag">${s.date} — <a href="${s.url}" target="_blank" rel="noopener">${s.name}</a></span>`).join("")}
+        ${vertical.sources.map((s) => `<span class="source-tag">${s.date}: <a href="${s.url}" target="_blank" rel="noopener">${s.name}</a></span>`).join("")}
       </div>
 
       <div class="nav-row">
