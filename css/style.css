@@ -142,6 +142,8 @@ p.subhead {
   box-shadow: 0 4px 14px var(--shadow);
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   text-align: left;
+  color: var(--charcoal);
+  font-family: var(--font);
 }
 
 .school-card:hover {
@@ -175,6 +177,7 @@ p.subhead {
   font-weight: 800;
   font-size: 1.05rem;
   margin-bottom: 2px;
+  color: var(--charcoal);
 }
 
 .school-card .school-vertical {

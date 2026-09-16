@@ -137,15 +137,15 @@ function verticalChip(vertical, school) {
 function renderLanding() {
   return `
     <div class="screen">
-      <h1 class="headline">Pick your school. See your field's future, one task at a time.</h1>
-      <p class="subhead">One real task, done by hand and by AI. Five minutes. Zero login. Find out what to actually study.</p>
+      <h1 class="headline">Pick your school. See the future of your field.</h1>
+      <p class="subhead">One real task, done by hand and by AI. Five minutes. Find out what to actually study.</p>
       <div class="school-grid">
         ${WORKSHIFT_DATA.schools.map((school) => `
           <button class="school-card ${school.color}" data-school="${school.id}">
             <div class="icon-tile">${school.icon}</div>
             <div class="school-body">
               <div class="school-name">${school.name}</div>
-              <div class="school-vertical">${school.verticals[0].name} · ${school.mascotLine}</div>
+              <div class="school-vertical">${school.verticals[0].name}</div>
               <span class="school-task-chip">${school.verticals[0].task}</span>
             </div>
             <div class="arrow">→</div>
