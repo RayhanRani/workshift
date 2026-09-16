@@ -209,47 +209,47 @@ function renderSimulator(vertical, school) {
 
       <div class="sim-panel">
         <div class="slider-group">
-          <label>Volume per month <span class="value">${sliders.volume}</span></label>
+          <label>Volume per month <span class="value" id="label-volume">${sliders.volume}</span></label>
           <input type="range" min="1" max="200" value="${sliders.volume}" data-slider="volume" />
           <div class="slider-caption">How many of these tasks you'd do in a month.</div>
         </div>
         <div class="slider-group">
-          <label>Value of your time ($/hr) <span class="value">$${sliders.hourlyValue}</span></label>
+          <label>Value of your time ($/hr) <span class="value" id="label-hourlyValue">$${sliders.hourlyValue}</span></label>
           <input type="range" min="10" max="150" value="${sliders.hourlyValue}" data-slider="hourlyValue" />
           <div class="slider-caption">What an hour of your work is worth.</div>
         </div>
         <div class="slider-group">
-          <label>AI accuracy / usable rate <span class="value">${fmtPct(sliders.aiAccuracy)}</span></label>
+          <label>AI accuracy / usable rate <span class="value" id="label-aiAccuracy">${fmtPct(sliders.aiAccuracy)}</span></label>
           <input type="range" min="1" max="100" value="${Math.round(sliders.aiAccuracy * 100)}" data-slider="aiAccuracy" />
-          <div class="slider-caption">Break-even is ${fmtPct(results.breakEvenAccuracy)} — drag below it and watch the banner flip.</div>
+          <div class="slider-caption" id="accuracy-caption">Break-even is ${fmtPct(results.breakEvenAccuracy)} — drag below it and watch the banner flip.</div>
         </div>
       </div>
 
-      <div class="result-banner ${winnerClass}">
-        ${winnerText}
-        <span class="sub">${winnerSub}</span>
+      <div class="result-banner ${winnerClass}" id="result-banner">
+        <span id="banner-text">${winnerText}</span>
+        <span class="sub" id="banner-sub">${winnerSub}</span>
       </div>
 
       <div class="metric-grid">
         <div class="metric-card">
           <div class="metric-label">Cost per usable output</div>
-          <div class="metric-value ${results.aiWins ? "green" : ""}">${fmtMoney(results.aiCostPerUsable)}<span style="font-size:0.6em;color:#93897f;font-weight:600;"> AI</span></div>
-          <div class="metric-value cardinal" style="font-size:0.95rem;margin-top:2px;">${fmtMoney(results.manualCostPerUsable)} <span style="font-size:0.7em;color:#93897f;font-weight:600;">manual</span></div>
+          <div class="metric-value ${results.aiWins ? "green" : ""}" id="metric-cost-ai">${fmtMoney(results.aiCostPerUsable)}<span style="font-size:0.6em;color:#93897f;font-weight:600;"> AI</span></div>
+          <div class="metric-value cardinal" style="font-size:0.95rem;margin-top:2px;" id="metric-cost-manual">${fmtMoney(results.manualCostPerUsable)} <span style="font-size:0.7em;color:#93897f;font-weight:600;">manual</span></div>
         </div>
         <div class="metric-card">
           <div class="metric-label">Time saved / month</div>
-          <div class="metric-value ${results.timeSavedHours >= 0 ? "green" : "cardinal"}">${results.timeSavedHours.toFixed(1)} hrs</div>
+          <div class="metric-value ${results.timeSavedHours >= 0 ? "green" : "cardinal"}" id="metric-time-saved">${results.timeSavedHours.toFixed(1)} hrs</div>
         </div>
         <div class="metric-card">
           <div class="metric-label">Break-even accuracy</div>
-          <div class="metric-value">${fmtPct(results.breakEvenAccuracy)}</div>
+          <div class="metric-value" id="metric-breakeven">${fmtPct(results.breakEvenAccuracy)}</div>
         </div>
         <div class="metric-card">
           <div class="metric-label">Footprint / month (AI)</div>
-          <div class="metric-value" style="font-size:1.05rem;">${(results.aiFootprint.carbonG / 1000).toFixed(2)} kg CO₂e</div>
+          <div class="metric-value" style="font-size:1.05rem;" id="metric-footprint-ai">${(results.aiFootprint.carbonG / 1000).toFixed(2)} kg CO₂e</div>
         </div>
       </div>
-      <p class="footprint-note">Manual footprint at this volume: ${(results.manualFootprint.carbonG / 1000).toFixed(2)} kg CO₂e · ${(results.manualFootprint.waterMl / 1000).toFixed(2)} L water</p>
+      <p class="footprint-note" id="footprint-note">Manual footprint at this volume: ${(results.manualFootprint.carbonG / 1000).toFixed(2)} kg CO₂e · ${(results.manualFootprint.waterMl / 1000).toFixed(2)} L water</p>
 
       <div class="nav-row">
         <button class="back-link" data-action="go-task">← Back to the task</button>
@@ -257,6 +257,48 @@ function renderSimulator(vertical, school) {
       </div>
     </div>
   `;
+}
+
+/**
+ * Patches only the numbers/banner during a slider drag, leaving the
+ * <input> elements themselves untouched so the browser's own drag
+ * gesture never gets interrupted by a DOM replacement mid-drag.
+ */
+function updateSimulatorDisplay(vertical) {
+  const sliders = state.sliders;
+  const results = computeSimResults(vertical, sliders);
+
+  document.getElementById("label-volume").textContent = sliders.volume;
+  document.getElementById("label-hourlyValue").textContent = `$${sliders.hourlyValue}`;
+  document.getElementById("label-aiAccuracy").textContent = fmtPct(sliders.aiAccuracy);
+  document.getElementById("accuracy-caption").textContent =
+    `Break-even is ${fmtPct(results.breakEvenAccuracy)} — drag below it and watch the banner flip.`;
+
+  const winnerClass = results.aiWins ? "ai-wins" : "manual-wins";
+  const winnerText = results.aiWins ? "🤖 AI wins right now" : "🙋 Manual wins right now";
+  const winnerSub = results.aiWins
+    ? `At ${fmtPct(sliders.aiAccuracy)} accuracy, AI is cheaper per usable output.`
+    : `At ${fmtPct(sliders.aiAccuracy)} accuracy, AI costs more per usable output than doing it yourself.`;
+
+  const banner = document.getElementById("result-banner");
+  banner.className = `result-banner ${winnerClass}`;
+  document.getElementById("banner-text").textContent = winnerText;
+  document.getElementById("banner-sub").textContent = winnerSub;
+
+  const costAi = document.getElementById("metric-cost-ai");
+  costAi.className = `metric-value ${results.aiWins ? "green" : ""}`;
+  costAi.innerHTML = `${fmtMoney(results.aiCostPerUsable)}<span style="font-size:0.6em;color:#93897f;font-weight:600;"> AI</span>`;
+  document.getElementById("metric-cost-manual").innerHTML =
+    `${fmtMoney(results.manualCostPerUsable)} <span style="font-size:0.7em;color:#93897f;font-weight:600;">manual</span>`;
+
+  const timeSaved = document.getElementById("metric-time-saved");
+  timeSaved.className = `metric-value ${results.timeSavedHours >= 0 ? "green" : "cardinal"}`;
+  timeSaved.textContent = `${results.timeSavedHours.toFixed(1)} hrs`;
+
+  document.getElementById("metric-breakeven").textContent = fmtPct(results.breakEvenAccuracy);
+  document.getElementById("metric-footprint-ai").textContent = `${(results.aiFootprint.carbonG / 1000).toFixed(2)} kg CO₂e`;
+  document.getElementById("footprint-note").textContent =
+    `Manual footprint at this volume: ${(results.manualFootprint.carbonG / 1000).toFixed(2)} kg CO₂e · ${(results.manualFootprint.waterMl / 1000).toFixed(2)} L water`;
 }
 
 function renderReality(vertical, school) {
@@ -374,7 +416,7 @@ function attachHandlers() {
       const key = el.dataset.slider;
       const raw = Number(el.value);
       state.sliders[key] = key === "aiAccuracy" ? raw / 100 : raw;
-      render();
+      updateSimulatorDisplay(currentVertical());
     });
   });
 }
