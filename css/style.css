@@ -320,8 +320,8 @@ p.subhead {
   flex-direction: column;
 }
 
-.tile.manual { background: linear-gradient(155deg, var(--charcoal), #423d3a); }
-.tile.ai { background: linear-gradient(155deg, var(--cardinal), var(--cardinal-light)); }
+.tile.manual { background: linear-gradient(155deg, var(--charcoal), #423d3a); order: 1; }
+.tile.ai { background: linear-gradient(155deg, var(--cardinal), var(--cardinal-light)); order: 2; }
 
 .tile .tile-label {
   font-size: 0.68rem;
@@ -358,6 +358,7 @@ p.subhead {
 
 .vs-badge {
   grid-column: 1 / -1;
+  order: 3;
   text-align: center;
   font-weight: 800;
   color: var(--gold);
